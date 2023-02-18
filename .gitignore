@@ -1,6 +1,7 @@
 x64/
 .vs/
 API/
+DATA/
 
 # Prerequisites
 *.d
