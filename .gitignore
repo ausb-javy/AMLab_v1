@@ -3,6 +3,8 @@ x64/
 API/
 DATA/
 
+*.zip
+
 
 # Prerequisites
 *.d
