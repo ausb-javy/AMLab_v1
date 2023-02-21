@@ -149,9 +149,6 @@
   <ItemGroup>
     <ClCompile Include="amlab_v1.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\test1.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
