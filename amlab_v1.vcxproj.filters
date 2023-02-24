@@ -18,6 +18,9 @@
     <ClCompile Include="amlab_v1.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\test1.h">
