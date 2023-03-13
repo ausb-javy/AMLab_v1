@@ -165,7 +165,7 @@ void Density(int den)
 void Layer_height(double FH)
 {
     int a = 0;
-    char ch[1000];
+    char ch1[1000];
     char fct[] = "\"layer_height\":";
     char fct1[] = "\"default_value\":";
     char* pch;
@@ -173,16 +173,16 @@ void Layer_height(double FH)
     rename("D:\\AMLab_v1\\slice\\fdmprinter.def.json", "D:\\AMLab_v1\\slice\\fdmprinter.txt");
     FILE* F = fopen("D:\\AMLab_v1\\slice\\fdmprinter.txt", "r");;
     FILE* f = fopen("D:\\AMLab_v1\\slice\\temp.txt", "w");
-    while (fgets(ch, 1000, F) != NULL) {
-        pch = strstr(ch, fct);
+    while (fgets(ch1, 1000, F) != NULL) {
+        pch = strstr(ch1, fct);
         if (pch != NULL) { a = 1; }
-        pch1 = strstr(ch, fct1);
+        pch1 = strstr(ch1, fct1);
         if (pch1 != NULL && a == 1) {
             fprintf(f, "                    \"default_value\": %.3f,\n", FH);
             a = 0;
         }
         else
-            fputs(ch, f);
+            fputs(ch1, f);
     }
     fclose(F);
     fclose(f);

@@ -1,7 +1,7 @@
 x64/
 .vs/
 API/
-DATA/
+#DATA/
 
 *.zip
 
