@@ -1,4 +1,6 @@
-﻿#include <igl/read_triangle_mesh.h>
+﻿//#include <igl/read_triangle_mesh.h>
+#include <igl/readSTL.h>
+#include <igl/readMESH.h>
 #include <igl/opengl/glfw/Viewer.h>
 #include <igl/opengl/glfw/imgui/ImGuiPlugin.h>
 #include <igl/opengl/glfw/imgui/ImGuiMenu.h>
@@ -8,7 +10,20 @@
 #include <backends/imgui_impl_opengl3.h>
 #include <GLFW/glfw3.h>
 #include <imgui.h>
+#include <math.h>
 #include <iostream>
+#include <iostream> //To change the formatting of std::cerr.
+#include <signal.h> //For floating point exceptions.
+#if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
+#include <sys/resource.h> //For setpriority.
+#endif
+#include "Application.h"
+#include "utils/logoutput.h"
+#include<iostream>
+#include<stdlib.h>
+#include<vector>
+using namespace std;
+
 
 //int main(int argc, char* argv[])
 //{
@@ -63,6 +78,62 @@
 //    vr.launch();
 //}
 
+//Copyright (c) 2018 Ultimaker B.V.
+//CuraEngine is released under the terms of the AGPLv3 or higher.
+
+namespace cura
+{
+
+    //Signal handler for a "floating point exception", which can also be integer division by zero errors.
+    void signal_FPE(int n)
+    {
+        (void)n;
+        logError("Arithmetic exception.\n");
+        exit(1);
+    }
+
+}//namespace cura
+
+
+//int main()
+//{
+//#if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
+//    //Lower the process priority on linux and mac. On windows this is done on process creation from the GUI.
+//    setpriority(PRIO_PROCESS, 0, 10);
+//#endif
+//
+//#ifndef DEBUG
+//    //Register the exception handling for arithmetic exceptions, this prevents the "something went wrong" dialog on windows to pop up on a division by zero.
+//    signal(SIGFPE, cura::signal_FPE);
+//#endif
+//    std::cerr << std::boolalpha;
+//
+//int argc = 16;
+//char* argv[20] = { "amlab_v1","slice","-v","-j","D:/AMLab_v1/slice/fdmprinter.def.json","-v","-j","D:/AMLab_v1/slice/fdmextruder.def.json","-e1","-s","infill_line_distance=0","-o","D:/AMLab_v1/slice/test.gcode","-l","D:/AMLab_v1/slice/test.stl","--next" };
+//    cura::Application::getInstance().run(argc, argv);
+//
+//    return 0;
+//}
+
+void CuraEngine(int argc, char** argv)
+{
+#if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
+    //Lower the process priority on linux and mac. On windows this is done on process creation from the GUI.
+    setpriority(PRIO_PROCESS, 0, 10);
+#endif
+
+#ifndef DEBUG
+    //Register the exception handling for arithmetic exceptions, this prevents the "something went wrong" dialog on windows to pop up on a division by zero.
+    signal(SIGFPE, cura::signal_FPE);
+#endif
+    std::cerr << std::boolalpha;
+
+    cura::Application::getInstance().run(argc, argv);
+
+   // return 0;
+}
+
+
 void Density(int den)
 {
     int a = 0;
@@ -71,9 +142,9 @@ void Density(int den)
     char fct1[] = "\"default_value\":";
     char* pch;
     char* pch1;
-    rename("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.json", "D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.txt");
-    FILE* F = fopen("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.txt", "r");;
-    FILE* f = fopen("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\temp.txt", "w");
+    rename("D:\\AMLab_v1\\slice\\fdmprinter.def.json", "D:\\AMLab_v1\\slice\\fdmprinter.txt");
+    FILE* F = fopen("D:\\AMLab_v1\\slice\\fdmprinter.txt", "r");;
+    FILE* f = fopen("D:\\AMLab_v1\\slice\\temp.txt", "w");
     while (fgets(ch, 1000, F) != NULL) {
         pch = strstr(ch, fct);
         if (pch != NULL) { a = 1; }
@@ -87,8 +158,8 @@ void Density(int den)
     }
     fclose(F);
     fclose(f);
-    remove("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.txt");
-    rename("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\temp.txt", "D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.json");
+    remove("D:\\AMLab_v1\\slice\\fdmprinter.txt");
+    rename("D:\\AMLab_v1\\slice\\temp.txt", "D:\\AMLab_v1\\slice\\fdmprinter.def.json");
 }
 
 void Layer_height(double FH)
@@ -99,9 +170,9 @@ void Layer_height(double FH)
     char fct1[] = "\"default_value\":";
     char* pch;
     char* pch1;
-    rename("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.json", "D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.txt");
-    FILE* F = fopen("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.txt", "r");;
-    FILE* f = fopen("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\temp.txt", "w");
+    rename("D:\\AMLab_v1\\slice\\fdmprinter.def.json", "D:\\AMLab_v1\\slice\\fdmprinter.txt");
+    FILE* F = fopen("D:\\AMLab_v1\\slice\\fdmprinter.txt", "r");;
+    FILE* f = fopen("D:\\AMLab_v1\\slice\\temp.txt", "w");
     while (fgets(ch, 1000, F) != NULL) {
         pch = strstr(ch, fct);
         if (pch != NULL) { a = 1; }
@@ -115,18 +186,143 @@ void Layer_height(double FH)
     }
     fclose(F);
     fclose(f);
-    remove("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.txt");
-    rename("D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\temp.txt", "D:\\AMLab_v1\\API\\lib\\curaengine\\Debug\\fdmprinter.json");
+    remove("D:\\AMLab_v1\\slice\\fdmprinter.txt");
+    rename("D:\\AMLab_v1\\slice\\temp.txt", "D:\\AMLab_v1\\slice\\fdmprinter.def.json");
 }
+
+struct vec3f
+{
+    float x, y, z;
+    int index;
+    inline vec3f operator =(const vec3f& v)
+    {
+        this->x = v.x;
+        this->y = v.y;
+        this->z = v.z;
+        this->index = v.index;
+        return *this;
+    }
+    inline bool operator==(vec3f& v)
+    {
+        if (this->x == v.x && this->y == v.y && this->z == v.z)
+            return true;
+        else
+            return false;
+    }
+    inline bool operator!=(vec3f& v)
+    {
+        return !(*this == v);
+    }
+};
+
+struct face
+{
+    vec3f verts[3];
+    face operator=(const face& f)
+    {
+        for (int n = 0; n < 3; n++)
+        {
+            this->verts[n] = f.verts[n];
+        }
+        return *this;
+    }
+};
+
+
+void fileformatchange(char* filename)
+{
+    FILE* filein;
+    FILE* fileout;
+    float x, y, z;
+    char buf[999];
+    char str[100];
+    vector<vec3f> vec1;
+    vector<face> myvector;
+    if (!(filein = fopen(filename, "r")))exit(1);
+    while (fscanf(filein, "%s", buf) != EOF)
+    {
+        switch (buf[0])
+        {
+        case's'://solid CATIA STL
+        case'o'://outer loop
+        case'e'://endloop or endfacet or endsolid C...
+            fgets(buf, sizeof(buf), filein);
+            break;
+        case'f'://facet normal ...!
+        {
+            face temp;
+            fscanf(filein, "%s", str);
+            fscanf(filein, "%f %f %f", &x, &y, &z);
+            fgets(buf, sizeof(buf), filein);//...might be '\0'
+            fgets(buf, sizeof(buf), filein);//skip "outer loop"
+            for (int k = 0; k < 3; k++)
+            {
+                float xx, yy, zz;
+                fscanf(filein, "%s", str);//skip "vertex"
+                fscanf(filein, "%f %f %f", &xx, &yy, &zz);
+                temp.verts[k].x = xx;
+                temp.verts[k].y = yy;
+                temp.verts[k].z = zz;
+                int w = 0;
+                if (vec1.size() == 0)
+                {
+                    temp.verts[k].index = w + 1;
+                }
+                else
+                {
+                    for (w = 0; w < vec1.size(); w++)
+                    {
+                        if (temp.verts[k] == vec1[w])
+                        {
+                            temp.verts[k].index = w + 1;
+                            break;
+                        }
+                        else if (temp.verts[k] != vec1[w])
+                            continue;
+
+                        else
+                            ;
+                    }
+                }
+
+                if (w == vec1.size())
+                {
+                    temp.verts[k].index = w + 1;
+                    vec1.push_back(temp.verts[k]);
+                }
+            }
+            myvector.push_back(temp);
+            break;
+        }
+        default:
+            fgets(buf, sizeof(buf), filein);
+            break;
+        }
+    }
+    fclose(filein);
+    if (!(fileout = fopen("D:\\AMLab_v1\\DATA\\chao.txt", "w")))exit(1);
+    fprintf(fileout, "# %d vertex %d face\n", (int)vec1.size(), (int)myvector.size());
+    for (int j = 0; j < vec1.size(); j++)
+        fprintf(fileout, "v %f %f %f\n", vec1[j].x, vec1[j].y, vec1[j].z);
+    for (int j = 0; j < myvector.size(); j++)
+        fprintf(fileout, "f %d %d %d\n", myvector[j].verts[0].index, myvector[j].verts[1].index, myvector[j].verts[2].index);
+    fclose(fileout);
+
+}
+
 
 int main(int argc, char* argv[])
 {
     Eigen::MatrixXd V;
     Eigen::MatrixXi F;
+    Eigen::MatrixXd N;
 
+    //fileformatchange("D:\\AMLab_v1\\DATA\\Exercise01.stl");
+    //rename("D:\\AMLab_v1\\DATA\\chao.txt", "D:\\AMLab_v1\\DATA\\Exercise01.obj");
     // Load a mesh in OFF format
-    //igl::readOFF(TUTORIAL_SHARED_PATH "/1.STL", V, F);
-    igl::read_triangle_mesh(argc > 1 ? argv[1] : "DATA\\cow.off", V, F);
+    igl::readOBJ( "DATA\\blade11.obj", V, F);
+    //igl::readSTL( "DATA\\blade11.STL", V, F, N);
+    //igl::read_triangle_mesh(argc > 1 ? argv[1] : "DATA\\cow.off", V, F);
     // Init the viewer
     igl::opengl::glfw::Viewer viewer;
 
@@ -209,10 +405,13 @@ int main(int argc, char* argv[])
             // do something
             std::cout << "boolVariable: " << std::boolalpha << support << std::endl;
         }
+        int argc=16;
+        char* argv[]={"amlab_v1","slice","-v","-j","D:/AMLab_v1/slice/fdmprinter.def.json","-v","-j","D:/AMLab_v1/slice/fdmextruder.def.json","-e1","-s","infill_line_distance=0","-o","D:/AMLab_v1/slice/test.gcode","-l","D:/AMLab_v1/slice/test.stl","--next"};
 
         if (ImGui::Button(u8"开始切片", ImVec2(-1, 0)))
         {
-            std::cout << "Hello\n";
+            //std::cout << "Hello\n";
+            CuraEngine(argc,argv);
         }
         ImGui::End();
     };
@@ -224,44 +423,5 @@ int main(int argc, char* argv[])
 }
 
 
-//Copyright (c) 2018 Ultimaker B.V.
-//CuraEngine is released under the terms of the AGPLv3 or higher.
 
-//#include <iostream> //To change the formatting of std::cerr.
-//#include <signal.h> //For floating point exceptions.
-//#if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
-//#include <sys/resource.h> //For setpriority.
-//#endif
-//#include "Application.h"
-//#include "utils/logoutput.h"
-//
-//namespace cura
-//{
-//
-//    //Signal handler for a "floating point exception", which can also be integer division by zero errors.
-//    void signal_FPE(int n)
-//    {
-//        (void)n;
-//        logError("Arithmetic exception.\n");
-//        exit(1);
-//    }
-//
-//}//namespace cura
-//
-//int main(int argc, char** argv)
-//{
-//#if defined(__linux__) || (defined(__APPLE__) && defined(__MACH__))
-//    //Lower the process priority on linux and mac. On windows this is done on process creation from the GUI.
-//    setpriority(PRIO_PROCESS, 0, 10);
-//#endif
-//
-//#ifndef DEBUG
-//    //Register the exception handling for arithmetic exceptions, this prevents the "something went wrong" dialog on windows to pop up on a division by zero.
-//    signal(SIGFPE, cura::signal_FPE);
-//#endif
-//    std::cerr << std::boolalpha;
-//
-//    cura::Application::getInstance().run(argc, argv);
-//
-//    return 0;
-//}
+
