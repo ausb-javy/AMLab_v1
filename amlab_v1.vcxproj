@@ -78,6 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -113,10 +114,10 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <AdditionalIncludeDirectories>API\include\libigl\libigl-src;API\include\libigl\glad-src\include;API\include\libigl\glfw-src\include;API\include\libigl\imgui-src;API\include\libigl\imguizmo-src;API\include\libigl\libigl_imgui_fonts-src;API\include\eigen;API\include\curaengine\curaengine-src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>API\include\libigl\libigl-src;API\include\libigl\glad-src\include;API\include\libigl\glfw-src\include;API\include\libigl\imgui-src;API\include\libigl\imguizmo-src;API\include\libigl\libigl_imgui_fonts-src;API\include\eigen;API\include\curaengine\curaengine-src;API\include\curaengine;API\include\curaengine\clipper</AdditionalIncludeDirectories>
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
@@ -147,13 +148,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="amlab_v1.cpp" />
-    <ClCompile Include="src\configure.cpp" />
-    <ClCompile Include="src\test.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\configure.h" />
-    <ClInclude Include="src\test.h" />
+    <ClCompile Include="amlab_v1.cpp">
+      <SDLCheck Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</SDLCheck>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

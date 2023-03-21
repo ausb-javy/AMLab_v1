@@ -22,6 +22,8 @@
 #include<iostream>
 #include<stdlib.h>
 #include<vector>
+#include<scene.cpp>
+#include<FffPolygonGenerator.cpp>
 using namespace std;
 
 
@@ -109,7 +111,7 @@ namespace cura
 //    std::cerr << std::boolalpha;
 //
 //int argc = 16;
-//char* argv[20] = { "amlab_v1","slice","-v","-j","D:/AMLab_v1/slice/fdmprinter.def.json","-v","-j","D:/AMLab_v1/slice/fdmextruder.def.json","-e1","-s","infill_line_distance=0","-o","D:/AMLab_v1/slice/test.gcode","-l","D:/AMLab_v1/slice/test.stl","--next" };
+//char* argv[20] = { "amlab_v1","slice","-v","-j","D:/Clib/AMLab_v1/slice/fdmprinter.def.json","-v","-j","D:/Clib/AMLab_v1/slice/fdmextruder.def.json","-e1","-s","infill_line_distance=0","-o","D:/Clib/AMLab_v1/slice/test.gcode","-l","D:/Clib/AMLab_v1/slice/test.stl","--next" };
 //    cura::Application::getInstance().run(argc, argv);
 //
 //    return 0;
@@ -142,9 +144,9 @@ void Density(int den)
     char fct1[] = "\"default_value\":";
     char* pch;
     char* pch1;
-    rename("D:\\AMLab_v1\\slice\\fdmprinter.def.json", "D:\\AMLab_v1\\slice\\fdmprinter.txt");
-    FILE* F = fopen("D:\\AMLab_v1\\slice\\fdmprinter.txt", "r");;
-    FILE* f = fopen("D:\\AMLab_v1\\slice\\temp.txt", "w");
+    rename("slice\\fdmprinter.def.json", "slice\\fdmprinter.txt");
+    FILE* F = fopen("slice\\fdmprinter.txt", "r");;
+    FILE* f = fopen("slice\\temp.txt", "w");
     while (fgets(ch, 1000, F) != NULL) {
         pch = strstr(ch, fct);
         if (pch != NULL) { a = 1; }
@@ -158,8 +160,8 @@ void Density(int den)
     }
     fclose(F);
     fclose(f);
-    remove("D:\\AMLab_v1\\slice\\fdmprinter.txt");
-    rename("D:\\AMLab_v1\\slice\\temp.txt", "D:\\AMLab_v1\\slice\\fdmprinter.def.json");
+    remove("slice\\fdmprinter.txt");
+    rename("slice\\temp.txt", "slice\\fdmprinter.def.json");
 }
 
 void Layer_height(double FH)
@@ -170,9 +172,9 @@ void Layer_height(double FH)
     char fct1[] = "\"default_value\":";
     char* pch;
     char* pch1;
-    rename("D:\\AMLab_v1\\slice\\fdmprinter.def.json", "D:\\AMLab_v1\\slice\\fdmprinter.txt");
-    FILE* F = fopen("D:\\AMLab_v1\\slice\\fdmprinter.txt", "r");;
-    FILE* f = fopen("D:\\AMLab_v1\\slice\\temp.txt", "w");
+    rename("slice\\fdmprinter.def.json", "slice\\fdmprinter.txt");
+    FILE* F = fopen("slice\\fdmprinter.txt", "r");;
+    FILE* f = fopen("slice\\temp.txt", "w");
     while (fgets(ch1, 1000, F) != NULL) {
         pch = strstr(ch1, fct);
         if (pch != NULL) { a = 1; }
@@ -186,8 +188,8 @@ void Layer_height(double FH)
     }
     fclose(F);
     fclose(f);
-    remove("D:\\AMLab_v1\\slice\\fdmprinter.txt");
-    rename("D:\\AMLab_v1\\slice\\temp.txt", "D:\\AMLab_v1\\slice\\fdmprinter.def.json");
+    remove("slice\\fdmprinter.txt");
+    rename("slice\\temp.txt", "slice\\fdmprinter.def.json");
 }
 
 struct vec3f
@@ -300,7 +302,7 @@ void fileformatchange(char* filename)
         }
     }
     fclose(filein);
-    if (!(fileout = fopen("D:\\AMLab_v1\\DATA\\chao.txt", "w")))exit(1);
+    if (!(fileout = fopen("D:\\Clib\\AMLab_v1\\DATA\\chao.txt", "w")))exit(1);
     fprintf(fileout, "# %d vertex %d face\n", (int)vec1.size(), (int)myvector.size());
     for (int j = 0; j < vec1.size(); j++)
         fprintf(fileout, "v %f %f %f\n", vec1[j].x, vec1[j].y, vec1[j].z);
@@ -317,10 +319,11 @@ int main(int argc, char* argv[])
     Eigen::MatrixXi F;
     Eigen::MatrixXd N;
 
-    //fileformatchange("D:\\AMLab_v1\\DATA\\Exercise01.stl");
-    //rename("D:\\AMLab_v1\\DATA\\chao.txt", "D:\\AMLab_v1\\DATA\\Exercise01.obj");
+    //fileformatchange("D:\\Clib\\AMLab_v1\\DATA\\Exercise01.stl");
+    //rename("D:\\Clib\\AMLab_v1\\DATA\\chao.txt", "D:\\Clib\\AMLab_v1\\DATA\\Exercise01.obj");
     // Load a mesh in OFF format
-    igl::readOBJ( "DATA\\blade11.obj", V, F);
+    //igl::readOBJ( "DATA\\blade11.obj", V, F);
+    igl::readOBJ("DATA\\testSubarea.obj", V, F);
     //igl::readSTL( "DATA\\blade11.STL", V, F, N);
     //igl::read_triangle_mesh(argc > 1 ? argv[1] : "DATA\\cow.off", V, F);
     // Init the viewer
@@ -406,7 +409,7 @@ int main(int argc, char* argv[])
             std::cout << "boolVariable: " << std::boolalpha << support << std::endl;
         }
         int argc=16;
-        char* argv[]={"amlab_v1","slice","-v","-j","D:/AMLab_v1/slice/fdmprinter.def.json","-v","-j","D:/AMLab_v1/slice/fdmextruder.def.json","-e1","-s","infill_line_distance=0","-o","D:/AMLab_v1/slice/test.gcode","-l","D:/AMLab_v1/slice/test.stl","--next"};
+        char* argv[]={"amlab_v1","slice","-v","-j","slice/fdmprinter.def.json","-v","-j","slice/fdmextruder.def.json","-e1","-s","infill_line_distance=0","-o","slice/test.gcode","-l","DATA\\testSubarea.STL","--next"};
 
         if (ImGui::Button(u8"开始切片", ImVec2(-1, 0)))
         {
